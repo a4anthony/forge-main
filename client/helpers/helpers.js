@@ -46,6 +46,14 @@ async function generateDevicesFromModel(viewer, model, dataHelper) {
                                 sensorTypes.push("ppd");
                             }
                         })
+                        sensorTypes.splice(0, 0, 'Temperature');
+                        sensorTypes.splice(1, 1, 'Humidity');
+                        sensorTypes.splice(2, 2, 'CO2');
+                        sensorTypes.splice(3, 3, 'tvoc');
+                        sensorTypes.splice(4, 4, 'illumination');
+                        sensorTypes.splice(5, 5, 'pmv');
+                        sensorTypes.splice(6, 6, 'ppd');
+
 
                         let sensorData = {}
                             // console.log(levelSensors)
@@ -168,7 +176,7 @@ async function setupIconMarkup(viewer, devices) {
         },
         icons: iconsPack,
         onClick: (id) => {
-            console.log('id',id);
+            console.log('id', id);
             viewer.select(id);
             viewer.utilities.fitToView();
             // switch (id) {

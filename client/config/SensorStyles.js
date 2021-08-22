@@ -48,4 +48,6 @@ export const PropertyIconMap = {
     CO2: co2Svg,
     tvoc: tvocSvg,
     illumination: illuminationSvg,
+    pmv: illuminationSvg,
+    ppd: illuminationSvg,
 };

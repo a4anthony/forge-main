@@ -6,8 +6,8 @@
  * user experience
  */
 
-import React, { useEffect, useRef, useState } from "react";
-import { Viewer } from "forge-dataviz-iot-react-components";
+import React, {useEffect, useRef, useState} from "react";
+import {Viewer} from "forge-dataviz-iot-react-components";
 
 /**
  * Defines the two additional toolbar icons - play button and eye icon to show/hide sensors
@@ -55,60 +55,56 @@ Autodesk.Viewing.theExtensionManager.registerExtension(
 
 const sensorDescriptors = {
     "Exit 2": {
-        position: {
-            x: -22.763547897338867,
-            y: 71.30282211303711,
-            z: -11.21093225479126
-        },
+        position: {x: -55.66762924194336, y: 88.7755241394043, z: -16.919677257537842},
     },
-    // "Restroom 2": {
-    //     position: { x: -65.71856307983398, y: 86.61837005615234, z: -16.919677257537842 },
-    // },
-    // "Consulation Room 2": {
-    //     position: { x: -90.7604751586914, y: 87.13715362548828, z: -16.919677257537842 },
-    // },
-    // "Main Entrance": {
-    //     position: { x: -105.57610702514648, y: -11.594642639160156, z: -16.919677257537842 },
-    // },
-    // "Cafeteria": {
-    //     position: { x: -143.30173110961914, y: 87.18759536743164, z: -16.919677257537842 },
-    // },
-    // "Lobby": {
-    //     position: { x: -132.45924377441406, y: 10.900766372680664, z: -10.544355034828186 },
-    // },
-    // "Administration": {
-    //     position: { x: -159.2780303955078, y: -1.8119175434112549, z: -16.919677257537842 },
-    // },
-    // "Imaging & Radiology Lab": {
-    //     position: { x: -159.2780303955078, y: -50.4998254776001, z: -16.919677257537842 },
-    // },
-    // "Consulation Room 1": {
-    //     position: { x: -126.44904327392578, y: -62.24671173095703, z: -16.919677257537842 },
-    // },
-    // "Restroom 1": {
-    //     position: { x: -112.73586654663086, y: -66.04428291320801, z: -16.919677257537842 },
-    // },
-    // "Medical Supplies": {
-    //     position: { x: -103.05361557006836, y: -66.04428291320801, z: -16.919677257537842 },
-    // },
-    // "Diagnostic Labs": {
-    //     position: { x: -80.95461654663086, y: -62.41075134277344, z: -16.919677257537842 },
-    // },
-    // "Lab Sample Storage": {
-    //     position: { x: -52.953880310058594, y: -62.41075134277344, z: -16.919677257537842 },
-    // },
-    // "Blood Bank": {
-    //     position: { x: -23.426319122314453, y: -62.41075134277344, z: -16.919677257537842 },
-    // },
-    // "Pharmacy": {
-    //     position: { x: 6.101234436035156, y: -62.41075134277344, z: -16.919677257537842 },
-    // },
-    // "Waiting Room": {
-    //     position: { x: 25.59398651123047, y: -62.41075134277344, z: -16.919677257537842 },
-    // },
-    // "Exit 1": {
-    //     position: { x: 40.003883361816406, y: -63.63409614562988, z: -16.919677257537842 },
-    // },
+    "Restroom 2": {
+        position: {x: -65.71856307983398, y: 86.61837005615234, z: -16.919677257537842},
+    },
+    "Consulation Room 2": {
+        position: {x: -90.7604751586914, y: 87.13715362548828, z: -16.919677257537842},
+    },
+    "Main Entrance": {
+        position: {x: -105.57610702514648, y: -11.594642639160156, z: -16.919677257537842},
+    },
+    "Cafeteria": {
+        position: {x: -143.30173110961914, y: 87.18759536743164, z: -16.919677257537842},
+    },
+    "Lobby": {
+        position: {x: -132.45924377441406, y: 10.900766372680664, z: -10.544355034828186},
+    },
+    "Administration": {
+        position: {x: -159.2780303955078, y: -1.8119175434112549, z: -16.919677257537842},
+    },
+    "Imaging & Radiology Lab": {
+        position: {x: -159.2780303955078, y: -50.4998254776001, z: -16.919677257537842},
+    },
+    "Consulation Room 1": {
+        position: {x: -126.44904327392578, y: -62.24671173095703, z: -16.919677257537842},
+    },
+    "Restroom 1": {
+        position: {x: -112.73586654663086, y: -66.04428291320801, z: -16.919677257537842},
+    },
+    "Medical Supplies": {
+        position: {x: -103.05361557006836, y: -66.04428291320801, z: -16.919677257537842},
+    },
+    "Diagnostic Labs": {
+        position: {x: -80.95461654663086, y: -62.41075134277344, z: -16.919677257537842},
+    },
+    "Lab Sample Storage": {
+        position: {x: -52.953880310058594, y: -62.41075134277344, z: -16.919677257537842},
+    },
+    "Blood Bank": {
+        position: {x: -23.426319122314453, y: -62.41075134277344, z: -16.919677257537842},
+    },
+    "Pharmacy": {
+        position: {x: 6.101234436035156, y: -62.41075134277344, z: -16.919677257537842},
+    },
+    "Waiting Room": {
+        position: {x: 25.59398651123047, y: -62.41075134277344, z: -16.919677257537842},
+    },
+    "Exit 1": {
+        position: {x: 40.003883361816406, y: -63.63409614562988, z: -16.919677257537842},
+    },
 };
 
 /**
@@ -133,7 +129,7 @@ const getNormalizedSensorValue = function (sensorName, sensorType) {
  * @memberof Autodesk.DataVisualization.Examples
  */
 function TexturedHeatMap(props) {
-    const { env, docUrn } = props.appData;
+    const {env, docUrn} = props.appData;
     const ApplicationContext = props.appContext;
     const [dataVizExt, setDataVizExt] = useState(null);
     const [sensorsVisible, setSensorsVisible] = useState(true);
@@ -167,18 +163,58 @@ function TexturedHeatMap(props) {
     function generateSimulationData() {
         const simulationData = {
             id: "floor1",
-            dbIds: [12512],
-            sensors: [],
+            dbIds: [12950, 12954],
+            sensors: [
+                {
+                    "id": "I39012-BAT10-00-B-08-01",
+                    "name": "I39012-BAT10-00-B-08-01",
+                    "dbId": 12950,
+                    "externalId": "bb80f159-62bc-47c1-ab2b-5c05eff9311d-000b3a44",
+                    "type": "combo",
+                    "sensorTypes": [
+                        "CO2",
+                        "pmv",
+                        "ppd",
+                        "tvoc",
+                        "Temperature",
+                        "Humidity",
+                        "illumination"
+                    ],
+                    "position": {
+                        "x": 14.113093376159668,
+                        "y": 29.324477195739746,
+                        "z": -11.539016246795654
+                    }
+                },
+                {
+                    "id": "I39012-BAT10-00-B-10-01",
+                    "name": "I39012-BAT10-00-B-10-01",
+                    "dbId": 12954,
+                    "externalId": "bb80f159-62bc-47c1-ab2b-5c05eff9311d-000b3c99",
+                    "type": "combo",
+                    "sensorTypes": [
+                        "pmv",
+                        "ppd",
+                        "Temperature",
+                        "Humidity"
+                    ],
+                    "position": {
+                        "x": 14.113521099090576,
+                        "y": 85.30265045166016,
+                        "z": -11.539016246795654
+                    }
+                },
+            ],
         };
 
-        for (let sensor in sensorDescriptors) {
-            simulationData.sensors.push({
-                id: sensor,
-                position: sensorDescriptors[sensor].position,
-                type: "thermometer",
-                sensorTypes: ["temperature"],
-            });
-        }
+        // for (let sensor in sensorDescriptors) {
+        //     simulationData.sensors.push({
+        //         id: sensor,
+        //         position: sensorDescriptors[sensor].position,
+        //         type: "thermometer",
+        //         sensorTypes: ["temperature"],
+        //     });
+        // }
 
         return [simulationData];
     }
