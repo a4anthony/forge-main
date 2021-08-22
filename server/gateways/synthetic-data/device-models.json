@@ -1,0 +1,69 @@
+[{
+    "deviceModelId": "d370a293-4bd5-4bdb-a3df-376dc131d44c",
+    "deviceModelName": "Human Comfort Sensor",
+    "deviceModelDesc": "Monitors indoor air quality by measuring levels of Carbon Dioxide (CO2), temperature, and humidity.",
+    "deviceProperties": [{
+            "propertyId": "Temperature",
+            "propertyName": "Temperature",
+            "propertyDesc": "External temperature in Fahrenheit",
+            "propertyType": "double",
+            "propertyUnit": "Celsius",
+            "rangeMin": "18.00",
+            "rangeMax": "28.00"
+        },
+        {
+            "propertyId": "Humidity",
+            "propertyName": "Humidity",
+            "propertyDesc": "Relative humidity in percentage",
+            "propertyType": "double",
+            "propertyUnit": "%RH",
+            "rangeMin": "20.00",
+            "rangeMax": "60.00"
+        },
+        {
+            "propertyId": "CO2",
+            "propertyName": "CO2",
+            "propertyDesc": "Level of carbon dioxide (CO₂)",
+            "propertyType": "double",
+            "propertyUnit": "ppm",
+            "rangeMin": "300.00",
+            "rangeMax": "1000.00"
+        },
+        {
+            "propertyId": "tvoc",
+            "propertyName": "tvoc",
+            "propertyDesc": "Total Volatile Organic Compounds",
+            "propertyType": "double",
+            "propertyUnit": "ppb",
+            "rangeMin": "0.00",
+            "rangeMax": "6000.00"
+        },
+        {
+            "propertyId": "illumination",
+            "propertyName": "illumination",
+            "propertyDesc": "Infrared and visible",
+            "propertyType": "double",
+            "propertyUnit": "lux",
+            "rangeMin": "0.00",
+            "rangeMax": "5000.00"
+        },
+        {
+            "propertyId": "pmv",
+            "propertyName": "pmv",
+            "propertyDesc": "predicted mean vote",
+            "propertyType": "double",
+            "propertyUnit": "pmv",
+            "rangeMin": "-3.00",
+            "rangeMax": "3.00"
+        },
+        {
+            "propertyId": "ppd",
+            "propertyName": "ppd",
+            "propertyDesc": "predicted percentage of dissatisfied",
+            "propertyType": "double",
+            "propertyUnit": "%",
+            "rangeMin": "0.00",
+            "rangeMax": "100.00"
+        }
+    ]
+}]
