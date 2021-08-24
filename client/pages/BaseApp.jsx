@@ -20,31 +20,31 @@
     }
 ] */
 
-import React, { useEffect, useState, useRef } from 'react'
-import { Viewer } from 'forge-dataviz-iot-react-components'
-import { CustomToolTip } from 'forge-dataviz-iot-react-components'
-import { DataPanelContainer } from 'forge-dataviz-iot-react-components'
-import { HyperionToolContainer } from 'forge-dataviz-iot-react-components'
-import adskLogoSvg from '../../assets/images/autodesk-logo.svg'
-import { ChronosTimeSlider } from 'forge-dataviz-iot-react-components'
-import { BasicDatePicker } from 'forge-dataviz-iot-react-components'
-import { HeatmapOptions } from 'forge-dataviz-iot-react-components'
-import { EventTypes } from 'forge-dataviz-iot-react-components'
-import io from 'socket.io-client'
+import React, { useEffect, useState, useRef } from "react";
+import { Viewer } from "forge-dataviz-iot-react-components";
+import { CustomToolTip } from "forge-dataviz-iot-react-components";
+import { DataPanelContainer } from "forge-dataviz-iot-react-components";
+import { HyperionToolContainer } from "forge-dataviz-iot-react-components";
+import adskLogoSvg from "../../assets/images/autodesk-logo.svg";
+import { ChronosTimeSlider } from "forge-dataviz-iot-react-components";
+import { BasicDatePicker } from "forge-dataviz-iot-react-components";
+import { HeatmapOptions } from "forge-dataviz-iot-react-components";
+import { EventTypes } from "forge-dataviz-iot-react-components";
+import io from "socket.io-client";
 
 import {
   SpriteSize,
   SensorStyleDefinitions,
   PropIdGradientMap,
   PropertyIconMap,
-} from '../config/SensorStyles.js'
+} from "../config/SensorStyles.js";
 
 import {
   getPaddedRange,
   getTimeInEpochSeconds,
   getClosestValue,
   clamp,
-} from '../../shared/Utility'
+} from "../../shared/Utility";
 
 import {
   Session,
@@ -55,11 +55,11 @@ import {
   EventType,
   DeviceProperty,
   DeviceModel,
-} from 'forge-dataviz-iot-data-modules/client'
+} from "forge-dataviz-iot-data-modules/client";
 
 // End Range for timeslider
-const endRange = new Date(new Date().getTime() + 7 * 60 * 60 * 1000 * 24)
-const startRange = new Date('2020-01-01T00:00:00Z')
+const endRange = new Date(new Date().getTime() + 7 * 60 * 60 * 1000 * 24);
+const startRange = new Date("2020-01-01T00:00:00Z");
 
 // TODO: This function does not sound like it belongs in the main application
 //  file, more suitable to be in a "device utility file". Move this to where
@@ -74,14 +74,14 @@ const startRange = new Date('2020-01-01T00:00:00Z')
  * @memberof Autodesk.DataVisualization.UI.BaseApp
  */
 function initialDeviceModelStyleMap(surfaceShadingConfig) {
-  let styleMap = {}
-  let styleDef = SensorStyleDefinitions
+  let styleMap = {};
+  let styleDef = SensorStyleDefinitions;
   if (surfaceShadingConfig && surfaceShadingConfig.deviceStyles) {
-    styleDef = surfaceShadingConfig.deviceStyles
+    styleDef = surfaceShadingConfig.deviceStyles;
   }
 
   // Create model-to-style map from style definitions.
-  const DataVizCore = Autodesk.DataVisualization.Core
+  const DataVizCore = Autodesk.DataVisualization.Core;
   Object.entries(styleDef).forEach(([deviceModelId, styleDef]) => {
     styleMap[deviceModelId] = new DataVizCore.ViewableStyle(
       DataVizCore.ViewableType.SPRITE,
@@ -90,10 +90,10 @@ function initialDeviceModelStyleMap(surfaceShadingConfig) {
       new THREE.Color(styleDef.highlightedColor),
       styleDef.highlightedUrl,
       styleDef.animatedUrls
-    )
-  })
+    );
+  });
 
-  return styleMap
+  return styleMap;
 }
 
 /**
@@ -104,18 +104,18 @@ function initialDeviceModelStyleMap(surfaceShadingConfig) {
  * @property {Date} currentDate Current date of the timeslice
  */
 class TimeOptions {}
-export { TimeOptions }
+export { TimeOptions };
 
 /**
  * Configure default start/end date to be ranging from two weeks
  * in the past, to tomorrow. Also the current time to be now.
  */
-const currDate = new Date()
-currDate.setUTCHours(0, 0, 0, 0)
-const endDate = new Date(currDate.getTime() + 1 * 24 * 60 * 60 * 1000)
-endDate.setUTCHours(0, 0, 0, 0)
-const startDate = new Date(currDate.getTime() - 14 * 24 * 60 * 60 * 1000)
-startDate.setUTCHours(0, 0, 0, 0)
+const currDate = new Date();
+currDate.setUTCHours(0, 0, 0, 0);
+const endDate = new Date(currDate.getTime() + 1 * 24 * 60 * 60 * 1000);
+endDate.setUTCHours(0, 0, 0, 0);
+const startDate = new Date(currDate.getTime() - 14 * 24 * 60 * 60 * 1000);
+startDate.setUTCHours(0, 0, 0, 0);
 
 /**
  * Main Base App component.
@@ -156,71 +156,71 @@ export default function BaseApp(props) {
    * api: "derivativeV2"|"derivativeV2_EU"|"modelDerivativeV2"|"fluent"|"D3S"|"D3S_EU" -- Please refer to LMV documentation
    * docUrn: String -- the document user want to load
    */
-  const { env, docUrn, adapterType, api } = props.appData
+  const { env, docUrn, adapterType, api } = props.appData;
 
   /**
    * Function to get the access token used to load the model into {@link Viewer}
    * @private
    */
   async function getToken() {
-    return fetch('/api/token')
+    return fetch("/api/token")
       .then((res) => res.json())
-      .then((data) => data.access_token)
+      .then((data) => data.access_token);
   }
 
-  let DataAdapter = RestApiDataAdapter
-  if (adapterType == 'azure') {
-    DataAdapter = AzureDataAdapter
+  let DataAdapter = RestApiDataAdapter;
+  if (adapterType == "azure") {
+    DataAdapter = AzureDataAdapter;
   }
 
   // calculate start/end range of the timeline if there is limitted data range
   // override the timeslider with the date range (from CSV or other database)
   if (props.appData.dataStart && props.appData.dataEnd) {
-    let dataStart = new Date(props.appData.dataStart)
-    let dataEnd = new Date(props.appData.dataEnd)
-    startRange.setTime(dataStart.getTime())
-    endRange.setTime(dataEnd.getTime())
+    let dataStart = new Date(props.appData.dataStart);
+    let dataEnd = new Date(props.appData.dataEnd);
+    startRange.setTime(dataStart.getTime());
+    endRange.setTime(dataEnd.getTime());
 
     if (
       startDate.getTime() < startRange.getTime() ||
       startDate.getTime() >= endRange.getTime()
     ) {
-      startDate.setTime(startRange.getTime())
+      startDate.setTime(startRange.getTime());
     }
 
     if (
       endDate.getTime() <= startRange.getTime() ||
       endDate.getTime() >= endRange.getTime()
     ) {
-      endDate.setTime(endRange.getTime())
+      endDate.setTime(endRange.getTime());
     }
 
     if (
       currDate.getTime() <= startRange.getTime() ||
       currDate.getTime() >= endRange.getTime()
     ) {
-      currDate.setTime(endRange.getTime())
+      currDate.setTime(endRange.getTime());
     }
 
     // give it a little bit buffer to make the range selection visible
-    startRange.setTime(dataStart.getTime() - 2 * 60 * 60 * 24 * 1000)
-    endRange.setTime(dataEnd.getTime() + 2 * 60 * 60 * 24 * 1000)
+    startRange.setTime(dataStart.getTime() - 2 * 60 * 60 * 24 * 1000);
+    endRange.setTime(dataEnd.getTime() + 2 * 60 * 60 * 24 * 1000);
   }
 
-  const lmvViewerRef = useRef(null)
-  const activeListenersRef = useRef({})
-  const appStateRef = useRef(null)
-  const timeOptionRef = useRef(null)
-  const hoveredDeviceInfoRef = useRef({})
-  const selectedGroupNodeRef = useRef()
-  const needRefreshHeatmapRef = useRef(false)
+  const lmvViewerRef = useRef(null);
+  const activeListenersRef = useRef({});
+  const appStateRef = useRef(null);
+  const timeOptionRef = useRef(null);
+  const hoveredDeviceInfoRef = useRef({});
+  const selectedGroupNodeRef = useRef();
+  const needRefreshHeatmapRef = useRef(false);
 
-  const [hoveredDeviceInfo, setHoveredDeviceInfo] = useState({})
+  const [hoveredDeviceInfo, setHoveredDeviceInfo] = useState({});
 
-  const [appState, setAppState] = useState({})
-  const [deviceTree, setDeviceTree] = useState([])
-  const [selectedDevice, setSelectedDevice] = useState('')
-  const [selectedGroupNode, setSelectedGroupNode] = useState()
+  const [appState, setAppState] = useState({});
+  const [deviceTree, setDeviceTree] = useState([]);
+  const [selectedDevice, setSelectedDevice] = useState("");
+  const [selectedGroupNode, setSelectedGroupNode] = useState();
   const [renderSettings, setRenderSettings] = useState(
     Object.assign(
       {},
@@ -228,55 +228,55 @@ export default function BaseApp(props) {
         showViewables: true,
         occlusion: false,
         showTextures: true,
-        heatmapType: 'GeometryHeatmap',
+        heatmapType: "GeometryHeatmap",
       },
       props.renderSettings
     )
-  )
+  );
 
-  const currentSurfaceShadingGroupRef = useRef('')
+  const currentSurfaceShadingGroupRef = useRef("");
 
   const [heatmapOptions, setHeatmapOptions] = useState({
-    resolutionValue: 'PT1H',
+    resolutionValue: "PT1H",
     showHeatMap: true,
-  })
+  });
 
   const [timeOptions, setTimeOptions] = useState({
     endTime: endDate,
     startTime: startDate,
     resolution: heatmapOptions.resolutionValue,
     currentTime: currDate,
-  })
+  });
 
-  const [dataContext, setDataContext] = useState('')
-  const currentDeviceDataRef = useRef({})
-  const chartDataRef = useRef({})
+  const [dataContext, setDataContext] = useState("");
+  const currentDeviceDataRef = useRef({});
+  const chartDataRef = useRef({});
 
-  timeOptionRef.current = timeOptions
-  appStateRef.current = appState
-  hoveredDeviceInfoRef.current = hoveredDeviceInfo
+  timeOptionRef.current = timeOptions;
+  appStateRef.current = appState;
+  hoveredDeviceInfoRef.current = hoveredDeviceInfo;
 
   useEffect(() => {
-    document.title = 'Hyperion Reference App'
+    document.title = "Hyperion Reference App";
     return function cleanUp() {
-      const viewer = lmvViewerRef.current
-      const listeners = activeListenersRef.current
+      const viewer = lmvViewerRef.current;
+      const listeners = activeListenersRef.current;
 
       if (viewer) {
         for (let key in listeners) {
-          viewer.removeEventListener(key, listeners[key])
+          viewer.removeEventListener(key, listeners[key]);
         }
 
-        activeListenersRef.current = {}
+        activeListenersRef.current = {};
       }
-    }
-  }, [])
+    };
+  }, []);
 
   useEffect(() => {
     if (props.data) {
-      onDataReady()
+      onDataReady();
     }
-  }, [props.data])
+  }, [props.data]);
 
   /**
    * Adjust the current time window of the given DataView object.
@@ -293,16 +293,16 @@ export default function BaseApp(props) {
     dataView,
     resolution = timeOptionRef.current.resolution
   ) {
-    const startSecond = getTimeInEpochSeconds(startTime)
-    const endSecond = getTimeInEpochSeconds(endTime)
+    const startSecond = getTimeInEpochSeconds(startTime);
+    const endSecond = getTimeInEpochSeconds(endTime);
 
-    const span = new DateTimeSpan(startSecond, endSecond, resolution)
-    dataView.setTimeWindow(span)
+    const span = new DateTimeSpan(startSecond, endSecond, resolution);
+    dataView.setTimeWindow(span);
   }
 
   function dispatchEventToHandler(event) {
     if (props.eventBus && props.eventBus.dispatchEvent) {
-      props.eventBus.dispatchEvent(event)
+      props.eventBus.dispatchEvent(event);
     }
   }
 
@@ -313,55 +313,55 @@ export default function BaseApp(props) {
    */
   async function initializeDataStore() {
     // Create a data adapter to pull in data from server.
-    const adapter = new DataAdapter(adapterType, props.appContext.dataUrl)
+    const adapter = new DataAdapter(adapterType, props.appContext.dataUrl);
 
     // Register the adapter and pull in all device models.
-    const session = new Session()
-    session.dataStore.registerDataAdapter(adapter)
+    const session = new Session();
+    session.dataStore.registerDataAdapter(adapter);
     session.dataStore.addEventListener(EventType.QueryCompleted, function () {
-      needRefreshHeatmapRef.current = true
-    })
-    await session.dataStore.loadDeviceModelsFromAdapters()
+      needRefreshHeatmapRef.current = true;
+    });
+    await session.dataStore.loadDeviceModelsFromAdapters();
 
-    const masterDataView = session.dataStore.createView()
+    const masterDataView = session.dataStore.createView();
 
     // Add all known devices to masterDataView so they are watched.
-    const deviceModels = session.dataStore.deviceModels
+    const deviceModels = session.dataStore.deviceModels;
     deviceModels.forEach((deviceModel) => {
       // Get all the properties that belong to this device type.
-      const pids = deviceModel.properties.map((p) => p.id)
+      const pids = deviceModel.properties.map((p) => p.id);
 
       deviceModel.devices.forEach((device) => {
         // Add a device and all its properties into the view.
-        masterDataView.addDeviceProperties(device.id, pids)
-      })
-    })
+        masterDataView.addDeviceProperties(device.id, pids);
+      });
+    });
 
-    setTimeWindow(timeOptions.startTime, timeOptions.endTime, masterDataView)
-    return [session, masterDataView]
+    setTimeWindow(timeOptions.startTime, timeOptions.endTime, masterDataView);
+    return [session, masterDataView];
   }
 
   // Called when heatmap type has changed.
   useEffect(() => {
     async function updateHeatmapType() {
-      const currAppState = appStateRef.current
+      const currAppState = appStateRef.current;
       if (currAppState.dataVizExtn) {
         await currAppState.dataVizExtn.setupSurfaceShading(
           currAppState.model,
           currAppState.shadingData,
           { type: renderSettings.heatmapType }
-        )
+        );
 
-        const currentSelectedNode = selectedGroupNodeRef.current
+        const currentSelectedNode = selectedGroupNodeRef.current;
         currAppState.dataVizExtn.renderSurfaceShading(
           currentSelectedNode.id,
           heatmapOptions.selectedPropertyId,
           getSensorValue
-        )
+        );
       }
     }
-    updateHeatmapType()
-  }, [renderSettings.heatmapType])
+    updateHeatmapType();
+  }, [renderSettings.heatmapType]);
 
   /**
    * Called by {@link Viewer} when the model has been loaded.
@@ -371,8 +371,8 @@ export default function BaseApp(props) {
    * @callback
    */
   async function onModelLoaded(viewer, data) {
-    const [session, masterDataView] = await initializeDataStore()
-    const dataVizExtn = viewer.getExtension('Autodesk.DataVisualization')
+    const [session, masterDataView] = await initializeDataStore();
+    const dataVizExtn = viewer.getExtension("Autodesk.DataVisualization");
 
     // Optional: load the MinimapExtension
     // viewer.loadExtension('Autodesk.AEC.Minimap3DExtension')
@@ -381,19 +381,19 @@ export default function BaseApp(props) {
       EventTypes.RENDER_SETTINGS_CHANGED,
       async (event) => {
         if (!event.hasStopped) {
-          let newSettings = event.data
-          let { occlusion, showViewables, showTextures } = newSettings
-          setRenderSettings(newSettings)
+          let newSettings = event.data;
+          let { occlusion, showViewables, showTextures } = newSettings;
+          setRenderSettings(newSettings);
 
-          dataVizExtn.showHideViewables(showViewables, occlusion)
+          dataVizExtn.showHideViewables(showViewables, occlusion);
           if (showTextures) {
-            dataVizExtn.showTextures()
+            dataVizExtn.showTextures();
           } else {
-            dataVizExtn.hideTextures()
+            dataVizExtn.hideTextures();
           }
         }
       }
-    )
+    );
 
     dispatchEventToHandler({
       type: EventTypes.MODEL_LOAD_COMPLETED,
@@ -402,7 +402,7 @@ export default function BaseApp(props) {
         data,
         session,
       },
-    })
+    });
 
     setAppState({
       viewer: viewer,
@@ -410,30 +410,30 @@ export default function BaseApp(props) {
       masterDataView: masterDataView,
       model: data.model,
       dataVizExtn,
-    })
+    });
   }
 
   async function onDataReady() {
-    let { session, masterDataView, viewer, model, dataVizExtn } = appState
-    const DataVizCore = Autodesk.DataVisualization.Core
+    let { session, masterDataView, viewer, model, dataVizExtn } = appState;
+    const DataVizCore = Autodesk.DataVisualization.Core;
 
-    let styleMap = initialDeviceModelStyleMap(props.surfaceShadingConfig)
+    let styleMap = initialDeviceModelStyleMap(props.surfaceShadingConfig);
     // let shadingData = await mapDevicesToRooms(session, model);
-    let { shadingData, devicePanelData } = props.data
-    shadingData.initialize(model)
-    const leafNodes = []
-    shadingData.getChildLeafs(leafNodes)
+    let { shadingData, devicePanelData } = props.data;
+    shadingData.initialize(model);
+    const leafNodes = [];
+    shadingData.getChildLeafs(leafNodes);
 
     function handleTreeNodeClick(event) {
-      let currentSelectedNode = selectedGroupNodeRef.current
+      let currentSelectedNode = selectedGroupNodeRef.current;
       if (currentSelectedNode && currentSelectedNode.id == event.data.id) {
-        setSelectedGroupNode(null)
-        selectedGroupNodeRef.current = null
+        setSelectedGroupNode(null);
+        selectedGroupNodeRef.current = null;
       } else {
-        let selectedNode = shadingData.getNodeById(event.data.id)
+        let selectedNode = shadingData.getNodeById(event.data.id);
         if (selectedNode) {
-          setSelectedGroupNode(selectedNode)
-          selectedGroupNodeRef.current = selectedNode
+          setSelectedGroupNode(selectedNode);
+          selectedGroupNodeRef.current = selectedNode;
         }
       }
     }
@@ -441,57 +441,59 @@ export default function BaseApp(props) {
     props.eventBus.addEventListener(
       EventTypes.DEVICE_TREE_EXPAND_EVENT,
       handleTreeNodeClick
-    )
+    );
     props.eventBus.addEventListener(
       EventTypes.GROUP_SELECTION_MOUSE_CLICK,
       handleTreeNodeClick
-    )
+    );
 
     function highlightOnMouseOver(event, isHighlight) {
-      let node = shadingData.getNodeById(event.data.id)
+      let node = shadingData.getNodeById(event.data.id);
       if (node && node.dbIds) {
         node.dbIds.map((dbId) =>
           viewer.impl.highlightObjectNode(model, dbId, isHighlight)
-        )
-        viewer.impl.invalidate(false, false, true)
+        );
+        viewer.impl.invalidate(false, false, true);
       } else {
         for (let i = 0; i < leafNodes.length; i++) {
-          let leaf = leafNodes[i]
+          let leaf = leafNodes[i];
           if (
             leaf.shadingPoints &&
             leaf.shadingPoints.find((item) => item.id == event.data.id)
           ) {
-            let sp = leaf.shadingPoints.find((item) => item.id == event.data.id)
+            let sp = leaf.shadingPoints.find(
+              (item) => item.id == event.data.id
+            );
 
             if (sp.dbId != null) {
-              viewer.impl.highlightObjectNode(model, sp.dbId, isHighlight)
+              viewer.impl.highlightObjectNode(model, sp.dbId, isHighlight);
             } else {
               leaf.dbIds.map((dbId) =>
                 viewer.impl.highlightObjectNode(model, dbId, isHighlight)
-              )
+              );
             }
-            viewer.impl.invalidate(false, false, true)
-            break
+            viewer.impl.invalidate(false, false, true);
+            break;
           }
         }
       }
 
-      event.originalEvent.stopPropagation()
+      event.originalEvent.stopPropagation();
     }
 
     props.eventBus.addEventListener(
       EventTypes.GROUP_SELECTION_MOUSE_OUT,
       (event) => {
-        highlightOnMouseOver(event, false)
+        highlightOnMouseOver(event, false);
       }
-    )
+    );
 
     props.eventBus.addEventListener(
       EventTypes.GROUP_SELECTION_MOUSE_OVER,
       (event) => {
-        highlightOnMouseOver(event, true)
+        highlightOnMouseOver(event, true);
       }
-    )
+    );
 
     /**
      * Gets the ViewableStyle object for the given device model.
@@ -503,7 +505,7 @@ export default function BaseApp(props) {
      *
      */
     function getViewableStyle(styleId) {
-      return styleMap[styleId] || styleMap['default']
+      return styleMap[styleId] || styleMap["default"];
     }
 
     /**
@@ -517,66 +519,70 @@ export default function BaseApp(props) {
      * @private
      */
     async function generateViewables(shadingData) {
-      let dbId = 1
-      const dbId2DeviceIdMap = {}
-      const deviceId2DbIdMap = {}
+      let dbId = 1;
+      const dbId2DeviceIdMap = {};
+      const deviceId2DbIdMap = {};
 
-      const viewableData = new DataVizCore.ViewableData()
+      const viewableData = new DataVizCore.ViewableData();
       viewableData.spriteSize =
         props.surfaceShadingConfig && props.surfaceShadingConfig.spriteSize
           ? props.surfaceShadingConfig.spriteSize
-          : SpriteSize
+          : SpriteSize;
 
       for (let i = 0; i < leafNodes.length; i++) {
-        let leaf = leafNodes[i]
+        let leaf = leafNodes[i];
 
         for (
           let j = 0;
           leaf.shadingPoints && j < leaf.shadingPoints.length;
           j++
         ) {
-          let device = leaf.shadingPoints[j]
+          let device = leaf.shadingPoints[j];
 
-          const style = getViewableStyle(device.contextData.styleId)
-          const position = device.position
-          const viewable = new DataVizCore.SpriteViewable(position, style, dbId)
+          const style = getViewableStyle(device.contextData.styleId);
+          const position = device.position;
+          const viewable = new DataVizCore.SpriteViewable(
+            position,
+            style,
+            dbId
+          );
 
-          dbId2DeviceIdMap[dbId] = device.id
-          deviceId2DbIdMap[device.id] = dbId
-          dbId++
+          dbId2DeviceIdMap[dbId] = device.id;
+          deviceId2DbIdMap[device.id] = dbId;
+          dbId++;
 
-          viewableData.addViewable(viewable)
+          viewableData.addViewable(viewable);
         }
       }
 
-      await viewableData.finish()
-      dataVizExtn.addViewables(viewableData)
+      await viewableData.finish();
+      dataVizExtn.addViewables(viewableData);
       dataVizExtn.showHideViewables(
         renderSettings.showViewables,
         renderSettings.occlusion
-      )
+      );
 
       if (!renderSettings.showTextures) {
-        dataVizExtn.hideTextures()
+        dataVizExtn.hideTextures();
       }
 
-      const propertyMap = session.dataStore.getPropertiesFromDataStore()
+      const propertyMap = session.dataStore.getPropertiesFromDataStore();
       const defaultHeatmapOptions = Object.assign({}, heatmapOptions, {
-        selectedPropertyId: Array.from(propertyMap.keys())[0] || '',
-      })
-      setHeatmapOptions(defaultHeatmapOptions)
+        selectedPropertyId: Array.from(propertyMap.keys())[0] || "",
+      });
+      setHeatmapOptions(defaultHeatmapOptions);
 
       if (
         props.surfaceShadingConfig &&
         props.surfaceShadingConfig.gradientSetting
       ) {
-        let gradientSettings = props.surfaceShadingConfig.gradientSetting
+        let gradientSettings = props.surfaceShadingConfig.gradientSetting;
         for (let deviceType in gradientSettings) {
           dataVizExtn.registerSurfaceShadingColors(
             deviceType,
             gradientSettings[deviceType],
             0.7
-          )
+          );
         }
       }
 
@@ -590,18 +596,18 @@ export default function BaseApp(props) {
         propertyMap: propertyMap,
         shadingData: shadingData,
         model,
-      })
+      });
 
-      setAppState(state)
+      setAppState(state);
     }
 
     function processEvent(callback) {
       return function (event) {
-        props.eventBus.dispatchEvent(event)
+        props.eventBus.dispatchEvent(event);
 
-        if (event.hasStopped) return
-        callback(event)
-      }
+        if (event.hasStopped) return;
+        callback(event);
+      };
     }
 
     /**
@@ -611,9 +617,9 @@ export default function BaseApp(props) {
      * @private
      */
     function onItemClick(event) {
-      const currAppState = appStateRef.current
+      const currAppState = appStateRef.current;
       if (currAppState.dataVizExtn && currAppState.dbId2DeviceIdMap) {
-        setSelectedDevice(currAppState.dbId2DeviceIdMap[event.dbId])
+        setSelectedDevice(currAppState.dbId2DeviceIdMap[event.dbId]);
       }
     }
 
@@ -624,19 +630,20 @@ export default function BaseApp(props) {
      * @private
      */
     async function onItemHovering(event) {
-      const currAppState = appStateRef.current
+      const currAppState = appStateRef.current;
       if (event.hovering && currAppState.dbId2DeviceIdMap) {
-        const deviceId = currAppState.dbId2DeviceIdMap[event.dbId]
-        const device = currAppState.session.dataStore.getDevice(deviceId)
+        const deviceId = currAppState.dbId2DeviceIdMap[event.dbId];
+        const device = currAppState.session.dataStore.getDevice(deviceId);
 
         if (device) {
-          const position = device.position
-          const mappedPosition =
-            currAppState.viewer.impl.worldToClient(position)
+          const position = device.position;
+          const mappedPosition = currAppState.viewer.impl.worldToClient(
+            position
+          );
 
           // Accounting for vertical offset of viewer container.
           const vertificalOffset =
-            event.originalEvent.clientY - event.originalEvent.offsetY
+            event.originalEvent.clientY - event.originalEvent.offsetY;
           setHoveredDeviceInfo({
             id: deviceId,
             xcoord: mappedPosition.x,
@@ -644,14 +651,14 @@ export default function BaseApp(props) {
               mappedPosition.y +
               vertificalOffset -
               SpriteSize / viewer.getWindow().devicePixelRatio,
-          })
+          });
         }
       } else {
         if (
           hoveredDeviceInfoRef.current &&
           hoveredDeviceInfoRef.current.id != null
         ) {
-          setHoveredDeviceInfo({})
+          setHoveredDeviceInfo({});
         }
       }
     }
@@ -662,34 +669,34 @@ export default function BaseApp(props) {
      * @param {DataAdapter} adapter
      */
     function updateDataStore(adapter) {
-      const dataStore = session.dataStore
-      adapter = adapter || dataStore.adapters[0]
+      const dataStore = session.dataStore;
+      adapter = adapter || dataStore.adapters[0];
 
-      let nodes = []
-      shadingData.getChildLeafs(nodes)
+      let nodes = [];
+      shadingData.getChildLeafs(nodes);
 
       let model = new DeviceModel(
-        'synthetic_device_model_' + new Date().getTime(),
+        "synthetic_device_model_" + new Date().getTime(),
         adapter.id
-      )
-      let hasData = false
+      );
+      let hasData = false;
 
       for (let node of nodes) {
         for (let sp of node.shadingPoints) {
-          let dm = dataStore.getDeviceModelFromDeviceId(sp.id)
+          let dm = dataStore.getDeviceModelFromDeviceId(sp.id);
           if (!dm) {
-            let deviceObj = model.addDevice(sp.id)
-            deviceObj.name = sp.name
-            deviceObj.deviceModel = model
-            deviceObj.sensorTypes = sp.types
-            deviceObj.position = sp.position
-            hasData = true
+            let deviceObj = model.addDevice(sp.id);
+            deviceObj.name = sp.name;
+            deviceObj.deviceModel = model;
+            deviceObj.sensorTypes = sp.types;
+            deviceObj.position = sp.position;
+            hasData = true;
           }
         }
       }
 
       if (hasData) {
-        dataStore.addDeviceModel(model)
+        dataStore.addDeviceModel(model);
       }
     }
 
@@ -699,19 +706,19 @@ export default function BaseApp(props) {
         type: renderSettings.heatmapType,
       }),
       generateViewables(shadingData),
-    ])
+    ]);
 
-    updateDataStore()
-    const completeDeviceTree = devicePanelData
-    setDeviceTree(completeDeviceTree)
+    updateDataStore();
+    const completeDeviceTree = devicePanelData;
+    setDeviceTree(completeDeviceTree);
 
-    const itemClickListener = processEvent(onItemClick)
-    const itemHoverListener = processEvent(onItemHovering)
+    const itemClickListener = processEvent(onItemClick);
+    const itemHoverListener = processEvent(onItemHovering);
 
-    viewer.addEventListener(DataVizCore.MOUSE_CLICK, itemClickListener)
-    viewer.addEventListener(DataVizCore.MOUSE_HOVERING, itemHoverListener)
-    activeListenersRef.current[DataVizCore.MOUSE_CLICK] = itemClickListener
-    activeListenersRef.current[DataVizCore.MOUSE_HOVERING] = itemHoverListener
+    viewer.addEventListener(DataVizCore.MOUSE_CLICK, itemClickListener);
+    viewer.addEventListener(DataVizCore.MOUSE_HOVERING, itemHoverListener);
+    activeListenersRef.current[DataVizCore.MOUSE_CLICK] = itemClickListener;
+    activeListenersRef.current[DataVizCore.MOUSE_HOVERING] = itemHoverListener;
 
     //Initialize websocket
     /**
@@ -721,37 +728,37 @@ export default function BaseApp(props) {
      * @private
      */
     async function createWebsocket(session) {
-      const dataStore = session.dataStore
+      const dataStore = session.dataStore;
       // console.log("Starting websocket");
       let socket = new io({
-        path: '/api/socket',
-      })
-      socket.on('connect', () => {
+        path: "/api/socket",
+      });
+      socket.on("connect", () => {
         // console.log("Socket open.");
-      })
-      socket.on('iot-data', (message) => {
-        let events = JSON.parse(message)
+      });
+      socket.on("iot-data", (message) => {
+        let events = JSON.parse(message);
         for (let e of events) {
-          let deviceId = e['DeviceId']
+          let deviceId = e["DeviceId"];
           for (const [key, value] of Object.entries(e)) {
-            if (key === 'timeStamp' || key === 'DeviceId') continue
+            if (key === "timeStamp" || key === "DeviceId") continue;
             //Outside of timeStamp and DeviceId all other keys are properties
-            dataStore.updateCurrentPropertyValue(deviceId, key, value)
+            dataStore.updateCurrentPropertyValue(deviceId, key, value);
           }
         }
-      })
-      socket.on('disconnect', () => {
+      });
+      socket.on("disconnect", () => {
         // console.log("Socket Disconnection");
-      })
+      });
     }
-    createWebsocket(session)
+    createWebsocket(session);
     props.eventBus.dispatchEvent({
       type: EventTypes.VIEWABLES_LOADED,
       data: {
         dataVizExtn,
         DataVizCore,
       },
-    })
+    });
   }
 
   /**
@@ -762,34 +769,34 @@ export default function BaseApp(props) {
    */
   function onViewerInitialized(viewer) {
     if (lmvViewerRef.current) {
-      throw new Error('Viewer has been recreated')
+      throw new Error("Viewer has been recreated");
     }
 
-    lmvViewerRef.current = viewer
+    lmvViewerRef.current = viewer;
   }
 
   var triggerDataRefresh = (function () {
-    let lastTime = new Date()
-    let pendingOptions = null
+    let lastTime = new Date();
+    let pendingOptions = null;
 
     // If the event was fired less than 16 ms, (or more than 60hz)
     // React UI will slow down and some event will be put into yeild mode
     // Control the frequency of the events will improve the performance a lot
     function updateTimeOptions(options) {
-      let currentTime = new Date()
+      let currentTime = new Date();
       if (currentTime - lastTime > 16) {
-        lastTime = currentTime
-        needRefreshHeatmapRef.current = true
-        setTimeOptions(options)
+        lastTime = currentTime;
+        needRefreshHeatmapRef.current = true;
+        setTimeOptions(options);
       } else {
-        pendingOptions = options
+        pendingOptions = options;
         setTimeout(() => {
-          updateTimeOptions(pendingOptions)
-        }, 10)
+          updateTimeOptions(pendingOptions);
+        }, 10);
       }
     }
-    return updateTimeOptions
-  })()
+    return updateTimeOptions;
+  })();
 
   /**
    * Handles changes on the time slider. The start date and/or end date can
@@ -801,17 +808,17 @@ export default function BaseApp(props) {
    * @alias Autodesk.DataVisualization.UI.BaseApp.#handleTimeRangeUpdated
    */
   function handleTimeRangeUpdated(startTime, endTime, currentTime) {
-    const currAppState = appStateRef.current
+    const currAppState = appStateRef.current;
     if (currAppState && currAppState.masterDataView) {
-      setTimeWindow(startTime, endTime, currAppState.masterDataView)
+      setTimeWindow(startTime, endTime, currAppState.masterDataView);
 
       // Update component time option state.
-      const options = Object.assign({}, timeOptionRef.current)
-      options.startTime = startTime
-      options.endTime = endTime
-      options.currentTime = currentTime ? currentTime : startTime
+      const options = Object.assign({}, timeOptionRef.current);
+      options.startTime = startTime;
+      options.endTime = endTime;
+      options.currentTime = currentTime ? currentTime : startTime;
 
-      triggerDataRefresh(options)
+      triggerDataRefresh(options);
     }
   }
 
@@ -823,10 +830,10 @@ export default function BaseApp(props) {
    * @alias Autodesk.DataVisualization.UI.BaseApp.#handleCurrTimeUpdated
    */
   function handleCurrTimeUpdated(currentTime) {
-    const options = Object.assign({}, timeOptionRef.current)
-    options.currentTime = currentTime
+    const options = Object.assign({}, timeOptionRef.current);
+    options.currentTime = currentTime;
 
-    triggerDataRefresh(options)
+    triggerDataRefresh(options);
   }
 
   /**
@@ -838,16 +845,16 @@ export default function BaseApp(props) {
    */
   async function onNodeSelected(event, node) {
     /** @type {string} */
-    const deviceId = node
+    const deviceId = node;
 
     // Only attempt select if device IDs have been established.
     if (appState.deviceId2DbIdMap && appState.deviceId2DbIdMap[deviceId]) {
       appState.dataVizExtn.highlightViewables([
         appState.deviceId2DbIdMap[deviceId],
-      ])
-      setSelectedDevice(deviceId)
+      ]);
+      setSelectedDevice(deviceId);
     } else {
-      setSelectedDevice('')
+      setSelectedDevice("");
     }
   }
 
@@ -856,8 +863,8 @@ export default function BaseApp(props) {
    * @private
    */
   function navigateBackToDevices() {
-    setSelectedDevice('')
-    appState.dataVizExtn.clearHighlightedViewables()
+    setSelectedDevice("");
+    appState.dataVizExtn.clearHighlightedViewables();
   }
 
   /**
@@ -874,23 +881,23 @@ export default function BaseApp(props) {
    * @private
    */
   function getSensorValue(surfaceShadingPoint, sensorType) {
-    const currAppState = appStateRef.current
-    const options = timeOptionRef.current
+    const currAppState = appStateRef.current;
+    const options = timeOptionRef.current;
 
     if (currAppState && options) {
-      const deviceId = surfaceShadingPoint.id
+      const deviceId = surfaceShadingPoint.id;
 
       /** @type {DataView} */
-      const dataView = currAppState.masterDataView
+      const dataView = currAppState.masterDataView;
 
       /** @type {Map.<string, DeviceProperty>} */
-      const properties = currAppState.propertyMap
+      const properties = currAppState.propertyMap;
 
       // Get the aggregated value for the selected property.
-      const prop = properties.get(sensorType)
+      const prop = properties.get(sensorType);
       if (prop) {
-        const ct = getTimeInEpochSeconds(options.currentTime)
-        const av = dataView.getAggregatedValues(deviceId, prop.id)
+        const ct = getTimeInEpochSeconds(options.currentTime);
+        const av = dataView.getAggregatedValues(deviceId, prop.id);
 
         // if (!av) {
         //   if (deviceId === 'I39012-BAT10-00-A-14-01') {
@@ -902,18 +909,18 @@ export default function BaseApp(props) {
 
         if (av) {
           // Given the current time, find the closest from time stamp array.
-          const value = getClosestValue(av, ct)
+          const value = getClosestValue(av, ct);
           // Compute the normalized sensor value from the data range.
-          const range = av.getDataRange('avgValues')
-          let normalized = (value - range.min) / (range.max - range.min)
+          const range = av.getDataRange("avgValues");
+          let normalized = (value - range.min) / (range.max - range.min);
 
-          normalized = clamp(normalized, 0, 1)
-          return normalized
+          normalized = clamp(normalized, 0, 1);
+          return normalized;
         }
       }
     }
 
-    return 0
+    return 0;
   }
 
   /**
@@ -923,34 +930,58 @@ export default function BaseApp(props) {
    * @private
    */
   function onHeatmapOptionChange(options) {
-    setHeatmapOptions(options)
-    const currAppState = appStateRef.current
-    console.log(options.selectedPropertyId)
+    setHeatmapOptions(options);
+    const currAppState = appStateRef.current;
+    // console.log(options.selectedPropertyId);
+    // console.log(options.selectedPropertyId.toLowerCase());
+    // console.log(
+    //   document.getElementById(
+    //     `${options.selectedPropertyId.toLowerCase()}_info`
+    //   )
+    // );
+
+    let propertyIndoId = `${options.selectedPropertyId.toLowerCase()}_info`;
+    let propertyInfo = document.getElementsByClassName("property_info");
+    console.log(propertyInfo);
+    console.log(propertyIndoId);
+    propertyInfo.forEach((info) => {
+      if (info.id === propertyIndoId) {
+        info.classList.add("d-block");
+        info.classList.remove("d-none");
+      } else {
+        info.classList.remove("d-block");
+        info.classList.add("d-none");
+      }
+      // console.log(info);
+      // console.log(info.id);
+      // console.log(info.classList);
+    });
+
     // Update timeOptions with new resolution value if applicable.
     if (options.resolutionValue != timeOptionRef.current.resolutionValue) {
-      var newTimeOptions = Object.assign({}, timeOptionRef.current)
-      newTimeOptions.resolution = options.resolutionValue
+      var newTimeOptions = Object.assign({}, timeOptionRef.current);
+      newTimeOptions.resolution = options.resolutionValue;
 
       setTimeWindow(
         newTimeOptions.startTime,
         newTimeOptions.endTime,
         currAppState.masterDataView,
         newTimeOptions.resolution
-      )
-      setTimeOptions(newTimeOptions)
+      );
+      setTimeOptions(newTimeOptions);
     }
 
     if (selectedGroupNode && currAppState) {
-      const { dataVizExtn } = currAppState
+      const { dataVizExtn } = currAppState;
       if (options.showHeatMap) {
-        const selectedProperty = options.selectedPropertyId
+        const selectedProperty = options.selectedPropertyId;
         dataVizExtn.renderSurfaceShading(
           selectedGroupNode.id,
           selectedProperty,
           getSensorValue
-        )
+        );
       } else {
-        dataVizExtn.removeSurfaceShading()
+        dataVizExtn.removeSurfaceShading();
       }
     }
   }
@@ -962,8 +993,8 @@ export default function BaseApp(props) {
    * @private
    */
   function checkGroupChange() {
-    const currAppState = appStateRef.current
-    const { dataVizExtn } = currAppState
+    const currAppState = appStateRef.current;
+    const { dataVizExtn } = currAppState;
 
     // A different group has been selected.
     if (
@@ -972,37 +1003,37 @@ export default function BaseApp(props) {
       currAppState &&
       dataVizExtn
     ) {
-      currentSurfaceShadingGroupRef.current = selectedGroupNode.id
+      currentSurfaceShadingGroupRef.current = selectedGroupNode.id;
 
-      dataVizExtn.removeSurfaceShading()
+      dataVizExtn.removeSurfaceShading();
 
       // Set resolution back to 1 hour.
-      if (timeOptionRef.current.resolution != 'PT1H') {
-        var newHeatmapOptions = heatmapOptions
-        newHeatmapOptions.resolutionValue = 'PT1H'
-        setHeatmapOptions(newHeatmapOptions)
+      if (timeOptionRef.current.resolution != "PT1H") {
+        var newHeatmapOptions = heatmapOptions;
+        newHeatmapOptions.resolutionValue = "PT1H";
+        setHeatmapOptions(newHeatmapOptions);
 
-        var newTimeOptions = Object.assign({}, timeOptionRef.current)
-        newTimeOptions.resolution = 'PT1H'
+        var newTimeOptions = Object.assign({}, timeOptionRef.current);
+        newTimeOptions.resolution = "PT1H";
         setTimeWindow(
           newTimeOptions.startTime,
           newTimeOptions.endTime,
           currAppState.masterDataView,
           newTimeOptions.resolution
-        )
-        setTimeOptions(newTimeOptions)
+        );
+        setTimeOptions(newTimeOptions);
       }
       if (heatmapOptions.showHeatMap) {
-        const selectedProperty = heatmapOptions.selectedPropertyId
+        const selectedProperty = heatmapOptions.selectedPropertyId;
         dataVizExtn.renderSurfaceShading(
           selectedGroupNode.id,
           selectedProperty,
           getSensorValue
-        )
+        );
       }
     } else if (selectedGroupNode == null && dataVizExtn) {
-      dataVizExtn.removeSurfaceShading()
-      currentSurfaceShadingGroupRef.current = null
+      dataVizExtn.removeSurfaceShading();
+      currentSurfaceShadingGroupRef.current = null;
     }
   }
 
@@ -1016,10 +1047,10 @@ export default function BaseApp(props) {
         dispatchEventToHandler({
           type: EventTypes.GROUP_SELECTION_MOUSE_CLICK,
           data: props.data.shadingData.children[0],
-        })
+        });
       }
     }
-  }, [appStateRef.current.propertyMap])
+  }, [appStateRef.current.propertyMap]);
 
   /**
    * Gets the selected property's range min, max and dataUnit value.
@@ -1029,50 +1060,50 @@ export default function BaseApp(props) {
    * @private
    */
   function getPropertyRanges(propertyId) {
-    const currAppState = appStateRef.current
+    const currAppState = appStateRef.current;
 
-    if (propertyId !== 'None') {
-      let dataUnit = ''
-      let rangeMin = Infinity
-      let rangeMax = -Infinity
+    if (propertyId !== "None") {
+      let dataUnit = "";
+      let rangeMin = Infinity;
+      let rangeMax = -Infinity;
 
       /** @type {Map.<string,DeviceProperty>} */
-      const propertyMap = currAppState.propertyMap
+      const propertyMap = currAppState.propertyMap;
 
       //Get the property data from the device model
-      let deviceProperty = propertyMap.get(propertyId)
+      let deviceProperty = propertyMap.get(propertyId);
 
       if (deviceProperty) {
-        dataUnit = deviceProperty.dataUnit
-        dataUnit = dataUnit.toLowerCase() === 'celsius' ? '°C' : dataUnit
-        dataUnit = dataUnit.toLowerCase() === 'fahrenheit' ? '°F' : dataUnit
-        rangeMin = Math.min(rangeMin, deviceProperty.rangeMin) // will be NaN if deviceProperty.rangeMin == undefined or NaN
-        rangeMax = Math.max(rangeMax, deviceProperty.rangeMax) // will be NaN if deviceProperty.rangeMax == undefined or NaN
+        dataUnit = deviceProperty.dataUnit;
+        dataUnit = dataUnit.toLowerCase() === "celsius" ? "°C" : dataUnit;
+        dataUnit = dataUnit.toLowerCase() === "fahrenheit" ? "°F" : dataUnit;
+        rangeMin = Math.min(rangeMin, deviceProperty.rangeMin); // will be NaN if deviceProperty.rangeMin == undefined or NaN
+        rangeMax = Math.max(rangeMax, deviceProperty.rangeMax); // will be NaN if deviceProperty.rangeMax == undefined or NaN
       }
 
       // Check if the property min and max range is available in the device model, else notify user
       if (isNaN(rangeMin) || isNaN(rangeMax)) {
         console.warn(
           `RangeMin and RangeMax for ${propertyId} not specified. Please update these values in the device model`
-        )
-        rangeMin = 0
-        rangeMax = 100
-        dataUnit = '%'
+        );
+        rangeMin = 0;
+        rangeMax = 100;
+        dataUnit = "%";
       }
-      return { rangeMin, rangeMax, dataUnit }
+      return { rangeMin, rangeMax, dataUnit };
     }
   }
 
-  const currAppState = appStateRef.current
+  const currAppState = appStateRef.current;
   if (selectedGroupNode && currAppState) {
-    const { dataVizExtn } = currAppState
+    const { dataVizExtn } = currAppState;
     if (
       heatmapOptions.showHeatMap &&
       dataVizExtn &&
       needRefreshHeatmapRef.current
     ) {
-      needRefreshHeatmapRef.current = false
-      dataVizExtn.updateSurfaceShading(getSensorValue)
+      needRefreshHeatmapRef.current = false;
+      dataVizExtn.updateSurfaceShading(getSensorValue);
     }
   }
 
@@ -1083,13 +1114,13 @@ export default function BaseApp(props) {
    * @private
    */
   function findNode(selectedNodeId) {
-    let stack = deviceTree.slice()
+    let stack = deviceTree.slice();
 
     while (stack.length) {
-      let item = stack.shift()
-      if (item.id == selectedNodeId) return item
+      let item = stack.shift();
+      if (item.id == selectedNodeId) return item;
 
-      stack = stack.concat(item.children)
+      stack = stack.concat(item.children);
     }
   }
 
@@ -1101,24 +1132,24 @@ export default function BaseApp(props) {
    * @private
    */
   function getDevicesInGroup(selectedNode) {
-    const deviceTreeFloor = findNode(selectedNode.id)
+    const deviceTreeFloor = findNode(selectedNode.id);
 
     function getChildren(accumulator, item) {
       if (!item.children || item.children.length === 0) {
-        accumulator.push(item)
-        return accumulator
+        accumulator.push(item);
+        return accumulator;
       }
       item.children.forEach((element) => {
-        getChildren(accumulator, element)
-      })
+        getChildren(accumulator, element);
+      });
     }
 
-    let devices = []
+    let devices = [];
     if (deviceTreeFloor) {
-      getChildren(devices, deviceTreeFloor)
+      getChildren(devices, deviceTreeFloor);
     }
 
-    return devices
+    return devices;
   }
 
   /**
@@ -1128,33 +1159,33 @@ export default function BaseApp(props) {
    * @private
    */
   function getDeviceData(devicesToQuery) {
-    let currAppState = appStateRef.current
+    let currAppState = appStateRef.current;
     /** @type {CurrentDeviceData} */
-    let data = {}
-    let propertyMap = currAppState.propertyMap
+    let data = {};
+    let propertyMap = currAppState.propertyMap;
     devicesToQuery.forEach((device) => {
       device.propIds.forEach((property) => {
         let av = currAppState.masterDataView.getAggregatedValues(
           device.id,
           property
-        )
+        );
         if (av) {
-          let options = timeOptionRef.current
-          const ct = getTimeInEpochSeconds(options.currentTime)
-          let val = getClosestValue(av, ct)
+          let options = timeOptionRef.current;
+          const ct = getTimeInEpochSeconds(options.currentTime);
+          let val = getClosestValue(av, ct);
 
-          Object.assign(data, currentDeviceDataRef.current)
+          Object.assign(data, currentDeviceDataRef.current);
 
           if (!data[device.id]) {
-            data[device.id] = {}
+            data[device.id] = {};
           }
-          let deviceProperty = propertyMap.get(property)
-          let dataUnit = deviceProperty ? deviceProperty.dataUnit : '%'
-          data[device.id][property] = `${val.toFixed(2)} ${dataUnit}`
+          let deviceProperty = propertyMap.get(property);
+          let dataUnit = deviceProperty ? deviceProperty.dataUnit : "%";
+          data[device.id][property] = `${val.toFixed(2)} ${dataUnit}`;
         }
-      })
-    })
-    if (Object.keys(data).length) currentDeviceDataRef.current = data
+      });
+    });
+    if (Object.keys(data).length) currentDeviceDataRef.current = data;
   }
 
   /**
@@ -1164,68 +1195,68 @@ export default function BaseApp(props) {
    * @private
    */
   function getChartData(devicesToQuery) {
-    let currAppState = appStateRef.current
+    let currAppState = appStateRef.current;
     /**@type {ChartData} */
-    let data = {}
-    let propertyMap = currAppState.propertyMap
+    let data = {};
+    let propertyMap = currAppState.propertyMap;
 
     devicesToQuery.forEach((device) => {
       device.propIds.forEach((property) => {
         let av = currAppState.masterDataView.getAggregatedValues(
           device.id,
           property
-        )
+        );
         if (av) {
-          const { min, max } = getPaddedRange(av.avgValues, 10.0)
-          Object.assign(data, chartDataRef.current)
+          const { min, max } = getPaddedRange(av.avgValues, 10.0);
+          Object.assign(data, chartDataRef.current);
 
           if (!data[device.id]) {
             data[device.id] = {
               name: device.name,
               properties: {},
-            }
+            };
           }
 
-          const seriesData = []
+          const seriesData = [];
           av.tsValues.forEach((tsValue, index) => {
             seriesData.push({
               value: [tsValue * 1000, av.avgValues[index]],
               label: {},
-            })
-          })
-          let deviceProperty = propertyMap.get(property)
-          let dataUnit = deviceProperty ? deviceProperty.dataUnit : '%'
-          data[device.id]['properties'][property] = {
+            });
+          });
+          let deviceProperty = propertyMap.get(property);
+          let dataUnit = deviceProperty ? deviceProperty.dataUnit : "%";
+          data[device.id]["properties"][property] = {
             dataUnit: dataUnit,
             seriesData: seriesData,
             yAxis: {
               dataMin: min,
               dataMax: max,
             },
-          }
+          };
         }
-      })
-    })
-    if (Object.keys(data).length) chartDataRef.current = data
+      });
+    });
+    if (Object.keys(data).length) chartDataRef.current = data;
   }
 
-  let devicesToQuery = []
+  let devicesToQuery = [];
   if (selectedGroupNode && deviceTree.length) {
-    devicesToQuery = getDevicesInGroup(selectedGroupNode)
+    devicesToQuery = getDevicesInGroup(selectedGroupNode);
   }
   if (
     hoveredDeviceInfoRef.current.id &&
     !currentDeviceDataRef.current[hoveredDeviceInfoRef.current.id]
   ) {
-    devicesToQuery.push(findNode(hoveredDeviceInfoRef.current.id))
+    devicesToQuery.push(findNode(hoveredDeviceInfoRef.current.id));
   } else if (selectedGroupNode === null && deviceTree) {
     // Viewing entire model, need to query all devices.
     deviceTree.forEach((group) => {
-      devicesToQuery.push.apply(devicesToQuery, group.children)
-    })
+      devicesToQuery.push.apply(devicesToQuery, group.children);
+    });
   }
-  getDeviceData(devicesToQuery)
-  getChartData(devicesToQuery)
+  getDeviceData(devicesToQuery);
+  getChartData(devicesToQuery);
 
   /**
    * @private
@@ -1242,30 +1273,30 @@ export default function BaseApp(props) {
     // are being queried for their data (in bulk), then the following will
     // trigger 10 renders. This should not be a concern as React will only ever
     // update the relevant DOM sub-tree that actually changes.
-    const query = eventArgs.query
-    setDataContext(`${query.dateTimeSpan.hashCode}-${query.deviceId}`)
+    const query = eventArgs.query;
+    setDataContext(`${query.dateTimeSpan.hashCode}-${query.deviceId}`);
   }
 
-  checkGroupChange()
+  checkGroupChange();
 
   useEffect(() => {
     if (currAppState.masterDataView) {
       currAppState.masterDataView.addEventListener(
         EventType.QueryCompleted,
         handleQueryCompleted
-      )
+      );
       return () => {
         currAppState.masterDataView.removeEventListener(
           EventType.QueryCompleted,
           handleQueryCompleted
-        )
-      }
+        );
+      };
     }
-  }, [currAppState.masterDataView])
+  }, [currAppState.masterDataView]);
 
   return (
     <React.Fragment>
-      <div id='main_header'>
+      <div id="main_header">
         <ChronosTimeSlider
           rangeStart={startRange.toISOString()}
           rangeEnd={endRange.toISOString()}
@@ -1285,7 +1316,7 @@ export default function BaseApp(props) {
         currentDeviceData={currentDeviceDataRef.current}
       />
 
-      <div className='viewer-container'>
+      <div className="viewer-container">
         <Viewer
           env={env}
           docUrn={docUrn}
@@ -1294,8 +1325,8 @@ export default function BaseApp(props) {
           onModelLoaded={onModelLoaded}
           getToken={getToken}
           extensions={{
-            'Autodesk.Viewing.ZoomWindow': {},
-            'Autodesk.DataVisualization': {},
+            "Autodesk.Viewing.ZoomWindow": {},
+            "Autodesk.DataVisualization": {},
           }}
           geomIndex={props.geomIndex}
         />
@@ -1339,7 +1370,7 @@ export default function BaseApp(props) {
           eventBus={props.eventBus}
         />
       )}
-      <img className='logo' src={adskLogoSvg} alt='Autodesk Logo' />
+      <img className="logo" src={adskLogoSvg} alt="Autodesk Logo" />
     </React.Fragment>
-  )
+  );
 }

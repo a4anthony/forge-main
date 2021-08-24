@@ -2,35 +2,35 @@
  * This sample illustrates how to add a heatmap to groups of dbIds.
  */
 
-import React, { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router'
-import BaseApp from './BaseApp.jsx'
-import DataHelper from './DataHelper'
-import { EventTypes } from 'forge-dataviz-iot-react-components'
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router";
+import BaseApp from "./BaseApp.jsx";
+import DataHelper from "./DataHelper";
+import { EventTypes } from "forge-dataviz-iot-react-components";
 import {
   generateDevicesFromModel,
   getDevicesWithPositions,
   setupIconMarkup,
-} from '../helpers/helpers'
+} from "../helpers/helpers";
 
 import {
   SpriteSize,
   SensorStyleDefinitions,
   PropIdGradientMap,
   PropertyIconMap,
-} from '../config/SensorStyles.js'
+} from "../config/SensorStyles.js";
 
-import '../extensions/IconMarkupExtension'
+import "../extensions/IconMarkupExtension";
 
 const surfaceShadingConfig = {
   spriteSize: SpriteSize,
   deviceStyles: SensorStyleDefinitions,
   gradientSetting: PropIdGradientMap,
-}
+};
 
 class EventBus {}
 
-THREE.EventDispatcher.prototype.apply(EventBus.prototype)
+THREE.EventDispatcher.prototype.apply(EventBus.prototype);
 
 /**
  * An example illustrating how to render a heatmap using groups of dbIds. Can be viewed at https://hyperion.autodesk.io/engine
@@ -47,24 +47,24 @@ THREE.EventDispatcher.prototype.apply(EventBus.prototype)
  * @memberof Autodesk.DataVisualization.Examples
  */
 function EngineSimulation(props) {
-  const eventBusRef = useRef(new EventBus())
-  const [data, setData] = useState(null)
+  const eventBusRef = useRef(new EventBus());
+  const [data, setData] = useState(null);
 
-  const dataRef = useRef()
-  const viewerRef = useRef(null)
-  const appStateRef = useRef({})
-  const leafNodesRef = useRef([])
-  const queryParams = new URLSearchParams(useLocation().search)
-  const geomIndex = queryParams.get('geometryIndex')
-    ? parseInt(queryParams.get('geometryIndex'))
-    : undefined
+  const dataRef = useRef();
+  const viewerRef = useRef(null);
+  const appStateRef = useRef({});
+  const leafNodesRef = useRef([]);
+  const queryParams = new URLSearchParams(useLocation().search);
+  const geomIndex = queryParams.get("geometryIndex")
+    ? parseInt(queryParams.get("geometryIndex"))
+    : undefined;
 
   const renderSettings = {
     showViewables: true,
     occlusion: false,
     showTextures: true,
-    heatmapType: 'GeometryHeatmap',
-  }
+    heatmapType: "GeometryHeatmap",
+  };
 
   //   props.appData.docUrn =
   //     'urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Zm9yZ2V0X2h5cGVyaW9uX3Rlc3QvRW5naW5lX1N0YW5kLmR3Zg'
@@ -74,37 +74,37 @@ function EngineSimulation(props) {
     eventBusRef.current.addEventListener(
       EventTypes.MODEL_LOAD_COMPLETED,
       async function (event) {
-        viewerRef.current = event.data.viewer
-        let viewer = viewerRef.current
+        viewerRef.current = event.data.viewer;
+        let viewer = viewerRef.current;
 
-        let model = event.data.data.model
-        let levelsExt = null
+        let model = event.data.data.model;
+        let levelsExt = null;
 
-        let viewerDocument = model.getDocumentNode().getDocument()
-        const aecModelData = await viewerDocument.downloadAecModelData()
+        let viewerDocument = model.getDocumentNode().getDocument();
+        const aecModelData = await viewerDocument.downloadAecModelData();
         if (aecModelData) {
           levelsExt = await viewer.loadExtension(
-            'Autodesk.AEC.LevelsExtension',
+            "Autodesk.AEC.LevelsExtension",
             {
               doNotCreateUI: true,
             }
-          )
+          );
         }
         const dataVizExt = await viewer.loadExtension(
-          'Autodesk.DataVisualization'
-        )
+          "Autodesk.DataVisualization"
+        );
 
         /**
          * Empty event to show how to use the EventBus
          */
-        const DataVizCore = Autodesk.DataVisualization.Core
+        const DataVizCore = Autodesk.DataVisualization.Core;
         eventBusRef.current.addEventListener(
           DataVizCore.MOUSE_CLICK,
           function (/* event */) {
             // console.log("Received sprite click", event);
             // event.hasStopped = true;
           }
-        )
+        );
 
         /**
          * Called when a user has selected a grouping in the {@link HyperionToolContainer} or expanded/closed a
@@ -113,26 +113,26 @@ function EngineSimulation(props) {
          */
         function handleNodeChange(event) {
           if (levelsExt) {
-            let { selectedNodeId } = appStateRef.current
-            let floorSelector = levelsExt.floorSelector
+            let { selectedNodeId } = appStateRef.current;
+            let floorSelector = levelsExt.floorSelector;
 
             if (selectedNodeId && selectedNodeId == event.data.id) {
-              floorSelector.selectFloor()
+              floorSelector.selectFloor();
               appStateRef.current = {
                 selectedNodeId: null,
-              }
+              };
             } else {
               if (floorSelector.floorData) {
                 let floor = floorSelector.floorData.find(
                   (item) => item.name == event.data.id
-                )
+                );
                 if (floor) {
-                  floorSelector.selectFloor(floor.index, true)
+                  floorSelector.selectFloor(floor.index, true);
                   // console.log(floor)
 
                   appStateRef.current = {
                     selectedNodeId: event.data.id,
-                  }
+                  };
                 }
               }
             }
@@ -142,44 +142,44 @@ function EngineSimulation(props) {
         eventBusRef.current.addEventListener(
           EventTypes.GROUP_SELECTION_MOUSE_CLICK,
           handleNodeChange
-        )
+        );
         eventBusRef.current.addEventListener(
           EventTypes.DEVICE_TREE_EXPAND_EVENT,
           handleNodeChange
-        )
+        );
 
         eventBusRef.current.addEventListener(
           EventTypes.GROUP_SELECTION_MOUSE_OUT,
           (event) => {
-            let floorSelector = levelsExt.floorSelector
+            let floorSelector = levelsExt.floorSelector;
 
             if (floorSelector.floorData) {
               let floor = floorSelector.floorData.find(
                 (item) => item.name == event.data.id
-              )
+              );
               if (floor) {
-                floorSelector.rollOverFloor()
-                viewer.impl.invalidate(false, false, true)
+                floorSelector.rollOverFloor();
+                viewer.impl.invalidate(false, false, true);
               }
             }
           }
-        )
+        );
 
         eventBusRef.current.addEventListener(
           EventTypes.GROUP_SELECTION_MOUSE_OVER,
           (event) => {
-            let floorSelector = levelsExt.floorSelector
+            let floorSelector = levelsExt.floorSelector;
             if (floorSelector.floorData) {
               let floor = floorSelector.floorData.find(
                 (item) => item.name == event.data.id
-              )
+              );
               if (floor) {
-                floorSelector.rollOverFloor(floor.index)
-                viewer.impl.invalidate(false, false, true)
+                floorSelector.rollOverFloor(floor.index);
+                viewer.impl.invalidate(false, false, true);
               }
             }
           }
-        )
+        );
         /**
          * Empty event to show how to use the EventBus
          */
@@ -193,56 +193,63 @@ function EngineSimulation(props) {
               event.clickInfo.dbId
             ) {
               viewer.getProperties(event.clickInfo.dbId, function (e) {
-                console.log('Entire object response ', {
+                console.log("Entire object response ", {
                   dbId: e.dbId,
                   externalId: e.externalId,
                   points: event.clickInfo.point,
-                })
-                console.log('Properties ', e.properties)
-              })
-              event.hasStopped = true
+                });
+                console.log("Properties ", e.properties);
+              });
+              event.hasStopped = true;
             }
           }
-        )
+        );
 
-        let dataHelper = new DataHelper()
+        let dataHelper = new DataHelper();
 
         let devicesList = await generateDevicesFromModel(
           viewer,
           model,
           dataHelper
-        )
+        );
 
-        let devicesListNoGroup = []
-        let dbIds = []
+        let devicesListNoGroup = [];
+        let dbIds = [];
         await devicesList.forEach((device) => {
           device.sensors.forEach((sensor) => {
-            dbIds.push(sensor.dbId)
-          })
-          devicesListNoGroup.push(...device.sensors)
-        })
+            dbIds.push(sensor.dbId);
+          });
+          devicesListNoGroup.push(...device.sensors);
+        });
 
         let shadingData = await dataHelper.createShadingGroupByFloor(
           viewer,
           model,
           devicesListNoGroup
-        )
+        );
 
-        let devicePanelData = dataHelper.createDeviceTree(shadingData)
+        let devicePanelData = dataHelper.createDeviceTree(shadingData);
 
-        console.log(devicesListNoGroup)
-        await setupIconMarkup(viewer, devicesListNoGroup)
+        console.log(devicesListNoGroup);
+        await setupIconMarkup(viewer, devicesListNoGroup);
 
-        shadingData.getChildLeafs(leafNodesRef.current)
+        shadingData.getChildLeafs(leafNodesRef.current);
 
         dataRef.current = {
           shadingData,
           devicePanelData,
-        }
-        setData(dataRef.current)
+        };
+        setData(dataRef.current);
+
+        document
+          .getElementById("property_info_container")
+          .classList.remove("d-none");
+        document
+          .getElementById("property_info_container")
+          .classList.add("d-block");
       }
-    )
-  }, [])
+    );
+  }, []);
 
   return (
     <React.Fragment>
@@ -256,7 +263,7 @@ function EngineSimulation(props) {
         geomIndex={geomIndex}
       />
     </React.Fragment>
-  )
+  );
 }
 
-export default EngineSimulation
+export default EngineSimulation;
