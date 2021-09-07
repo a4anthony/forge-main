@@ -12,14 +12,14 @@ export const SpriteSize = 24;
  * @type {SensorStyleDefinitions}
  */
 export const SensorStyleDefinitions = {
-    default: {
-        url: circleSvg,
-        highlightedUrl: circleHighlightedSvg,
-        color: 0xffffff,
-        highlightedColor: 0xffffff,
-        //You may use this instead of highlightedUrl and highlightedColor to simply color over the regular url image
-        // highlightedColor: 0xa1c5ff,
-    },
+  default: {
+    url: circleSvg,
+    highlightedUrl: circleHighlightedSvg,
+    color: 0xffffff,
+    highlightedColor: 0xffffff,
+    //You may use this instead of highlightedUrl and highlightedColor to simply color over the regular url image
+    // highlightedColor: 0xa1c5ff,
+  },
 };
 
 /**
@@ -29,25 +29,25 @@ export const SensorStyleDefinitions = {
  * details.
  */
 export const PropIdGradientMap = {
-    Temperature: [0x0000ff, 0x00ff00, 0xffff00, 0xff0000],
-    illumination: [0x0000ff, 0x00ff00, 0xffff00, 0xff0000],
-    tvoc: [0xc034eb, 0xf5ce42, 0x4287f5],
-    Humidity: [0x00f260, 0x0575e6],
-    "CO₂": [0x1e9600, 0xfff200, 0xff0000],
-    co2: [0x1e9600, 0xfff200, 0xff0000],
-    CO2: [0x1e9600, 0xfff200, 0xff0000],
-    pmv: [0x1794cf, 0x17bdcf, 0x6dcf17, 0xcfb617, 0xcf3c17],
-    ppd: [0xc034eb, 0xf5ce42, 0x4287f5],
+  Temperature: [0x0000ff, 0xffff00, 0xff0000],
+  illumination: [0x0000ff, 0x00ff00, 0xff0000],
+  tvoc: [0xc034eb, 0xf5ce42, 0x4287f5],
+  Humidity: [0x00f260, 0x00ff00, 0x0575e6],
+  "CO₂": [0x1e9600, 0xfff200, 0xff0000],
+  co2: [0x1e9600, 0xfff200, 0xff0000],
+  CO2: [0x1e9600, 0xfff200, 0xff0000],
+  pmv: [0x1794cf, 0xcfb617, 0xcf3c17],
+  ppd: [0xc034eb, 0xf5ce42, 0x4287f5],
 };
 
 export const PropertyIconMap = {
-    Temperature: temperatureSvg,
-    Humidity: humiditySvg,
-    "CO₂": co2Svg,
-    co2: co2Svg,
-    CO2: co2Svg,
-    tvoc: tvocSvg,
-    illumination: illuminationSvg,
-    pmv: illuminationSvg,
-    ppd: illuminationSvg,
+  Temperature: temperatureSvg,
+  Humidity: humiditySvg,
+  "CO₂": co2Svg,
+  co2: co2Svg,
+  CO2: co2Svg,
+  tvoc: tvocSvg,
+  illumination: illuminationSvg,
+  pmv: illuminationSvg,
+  ppd: illuminationSvg,
 };
